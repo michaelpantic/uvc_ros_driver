@@ -91,8 +91,8 @@ private:
 	int width_ = raw_width_ - 16;
 	int height_ = raw_height_;
 	int frameCounter_ = 0;
-	int modulo_ = 2;
-    int modulo_imu_ = 4;
+	int modulo_ = 1;
+    int modulo_imu_ = 1;
 	int calibration_mode_ = 0;
 
 	ros::Duration imu_dt_ = ros::Duration(0.0);
@@ -247,6 +247,11 @@ public:
 	{
 		set_calibration_ = calibration;
 	};
+    void setSubsampling(int modulo, int modulo_imu)
+    {
+        modulo_ = modulo;
+        modulo_imu_ = modulo_imu;
+    };
 	int getNumberOfCameras()
 	{
 		return n_cameras_;

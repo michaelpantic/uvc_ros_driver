@@ -75,7 +75,7 @@ int main(int argc, char **argv)
 
 	// get params from launch file
 	bool flip, set_calibration, depth_map, calibration_mode, ait_msgs;
-	int camera_config, number_of_cameras;
+	int camera_config, number_of_cameras, modulo, modulo_imu;
 	std::string calibration_file_path;
 	// TODO: check if parameter exist
 	nh.getParam("flip", flip);
@@ -85,8 +85,11 @@ int main(int argc, char **argv)
 	nh.getParam("depthMap", depth_map);
 	nh.getParam("cameraConfigFile", calibration_file_path);
 	nh.getParam("calibrationMode", calibration_mode);
+    nh.param("subsamplingCamera", modulo  , 1);
+    nh.param("subsamplingIMU", modulo_imu, 1);
 
-	// read yaml calibration file from device
+
+  // read yaml calibration file from device
 	CameraParameters camParams =
 		loadCustomCameraCalibration(calibration_file_path);
 
@@ -104,6 +107,7 @@ int main(int argc, char **argv)
 	uvc_ros_driver.setNumberOfCameras(number_of_cameras);
 	uvc_ros_driver.setUseOFAITMsgs(ait_msgs);
 	uvc_ros_driver.setFlip(flip);
+    uvc_ros_driver.setSubsampling(modulo, modulo_imu);
 
 	if (camParams.isValid) {
 		uvc_ros_driver.setCalibrationParam(set_calibration);
