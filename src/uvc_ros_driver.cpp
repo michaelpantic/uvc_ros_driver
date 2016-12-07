@@ -934,7 +934,7 @@ void uvcROSDriver::uvc_cb(uvc_frame_t *frame)
 			msg_imu.header.stamp = imu_timestamp;
 
 			msg_vio.imu.push_back(msg_imu);
-            if(imu_msg_counter_in_frame % modulo_imu == 0) {
+            if(imu_msg_counter_in_frame % modulo_imu_ == 0) {
 
               if (imu_id == 1) {
                 imu1_publisher_.publish(msg_imu);
