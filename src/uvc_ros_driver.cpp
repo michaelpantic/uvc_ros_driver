@@ -795,7 +795,6 @@ void uvcROSDriver::uvc_cb(uvc_frame_t *frame)
     // Static vars are initialized only in the first run. Calculate time offset between current time (ros::Time::now())
     // of host and substract current timestamp of device, as this timestamp depends on the powered on time of the device
 	static ros::Duration time_offset_frame(0.041);
-	static ros::Duration time_offset_img_imu(-0.07141164146543857);
 	static ros::Time fpga_frame_time = ros::Time::now() - time_offset_frame - ros::Duration(double(timestamp/k_ms_to_sec)); //subtract first timestamp
 	static ros::Time fpga_line_time = ros::Time::now() - ros::Duration(double(timestamp/k_ms_to_sec));
 	ros::Duration fpga_time_add(0.0);
@@ -935,12 +934,14 @@ void uvcROSDriver::uvc_cb(uvc_frame_t *frame)
 			msg_imu.header.stamp = imu_timestamp;
 
 			msg_vio.imu.push_back(msg_imu);
+            if(imu_msg_counter_in_frame % modulo_imu == 0) {
 
-			if (imu_id == 1){
-				imu1_publisher_.publish(msg_imu);
-			} else {
-				imu0_publisher_.publish(msg_imu);
-			}
+              if (imu_id == 1) {
+                imu1_publisher_.publish(msg_imu);
+              } else {
+                imu0_publisher_.publish(msg_imu);
+              }
+            }
 
 			++imu_msg_counter_in_frame;
 
@@ -999,9 +1000,9 @@ void uvcROSDriver::uvc_cb(uvc_frame_t *frame)
 			frame_time_ = fpga_frame_time;
 			frameCounter_++;
 		}
-		msg_vio.header.stamp = frame_time_ + time_offset_img_imu;
-		msg_vio.left_image.header.stamp = frame_time_ + time_offset_img_imu;
-		msg_vio.right_image.header.stamp = frame_time_ + time_offset_img_imu;
+		msg_vio.header.stamp = frame_time_;
+		msg_vio.left_image.header.stamp = frame_time_;
+		msg_vio.right_image.header.stamp = frame_time_;
 		// set frame_id on images and on msg_vio
 		msg_vio.header.stamp = frame_time_;
 		msg_vio.left_image.header.frame_id = "cam_0_optical_frame";
@@ -1013,9 +1014,9 @@ void uvcROSDriver::uvc_cb(uvc_frame_t *frame)
 			cam_1_pub_.publish(msg_vio.right_image);
 
 			// set camera info header
-			setCameraInfoHeader(info_cam_0_, width_, height_, frame_time_ + time_offset_img_imu,
+			setCameraInfoHeader(info_cam_0_, width_, height_, frame_time_,
 					    "cam_0_optical_frame");
-			setCameraInfoHeader(info_cam_1_, width_, height_, frame_time_ + time_offset_img_imu,
+			setCameraInfoHeader(info_cam_1_, width_, height_, frame_time_,
 					    "cam_1_optical_frame");
 			// publish camera info
 			cam_0_info_pub_.publish(info_cam_0_);
