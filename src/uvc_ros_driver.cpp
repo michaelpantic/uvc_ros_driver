@@ -576,6 +576,8 @@ void uvcROSDriver::setCalibration(CameraParameters camParams)
 
 	setParam("SETCALIB", float(set_calibration_));
 
+	 // set ACC low bias
+        setParam("ACCEL_LP", 53.0f);
 	// std::cout << "Configuring cameras..." << std::endl;
 	setParam("RESETMT9V034", 1.0f);
 	setParam("RESETICM20608",1.0f);

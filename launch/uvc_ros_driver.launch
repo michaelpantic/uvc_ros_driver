@@ -9,12 +9,12 @@
   <!-- calibrationMode 0 no calibration, 1: calibration for 1 camera pair,
       2: calibration for 2 camera pairs and so on -->
   <arg name="calibrationMode" default="0" />
-  <arg name="depthMap" default="true" />
+  <arg name="depthMap" default="false" />
   <!-- 1: 2 front cameras, 3: 2 front + 2nd camera pair,
        7: 2 front + 2nd and 3rd camra pair -->
   <arg name="cameraConfig" default="1" />
   <!-- calibration file in folder calib -->
-  <arg name="cameraConfigFile" default="/media/camera/calibration.yaml" />
+  <arg name="cameraConfigFile" default="/mnt/calibration.yaml" />
 
   <!-- camera node -->
   <node pkg="uvc_ros_driver" name="uvc_camera" type="uvc_ros_driver_node" output="screen">
@@ -27,6 +27,8 @@
     <param name="cameraConfig" type="int"  value="$(arg cameraConfig)" />
     <param name="cameraConfigFile" type="string"  value="$(arg cameraConfigFile)" />
     <rosparam command="load" file="$(find uvc_ros_driver)/params/homography_mapping.yaml" />
+    <param name="subsamplingIMU" type="int" value="4" />
+    <param name="subsamplingCamera" type="int" value="2" />
   </node>
 
 </launch>
